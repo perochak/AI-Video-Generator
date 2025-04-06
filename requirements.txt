@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+TTS
+diffusers
+transformers
+ftplib
+moviepy
+torch
