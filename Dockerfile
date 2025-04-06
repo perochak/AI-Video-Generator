@@ -2,24 +2,20 @@ FROM python:3.10
 
 WORKDIR /app
 
-# Copy the application code and the bash script into the container
 COPY . .
 
-# Copy the on_start.sh script to the container
-COPY on_start.sh /app/on_start.sh
-
-# Make the bash script executable
-RUN chmod +x /app/on_start.sh
-
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y ffmpeg libgl1 git
+
+# Install Python dependencies
 RUN pip install --upgrade pip
+
+# Install PyTorch (adjust CUDA version if needed)
+RUN pip install torch==2.2.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# Now install other dependencies
 RUN pip install -r requirements.txt
 
-RUN chmod -R 755 /app/
-
-# Expose the port the app will run on
 EXPOSE 8000
 
-# Use the bash script to start the app
-CMD ["/app/on_start.sh"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
