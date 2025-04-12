@@ -10,7 +10,7 @@ import threading
 import ftplib
 
 # Import your actual modules for image, tts, video etc.
-from tts import generate_voice
+#from tts import generate_voice
 from diffusion import generate_image
 from video import create_video_with_audio
 
@@ -45,14 +45,14 @@ def process_scene(scene: Scene, index: int):
         generate_image(scene.image_prompt, image_path)
 
         # TTS
-        audio_path = os.path.join(output_dir, "audio.wav")
-        generate_voice(scene.voice_over, audio_path)
+        #audio_path = os.path.join(output_dir, "audio.wav")
+        #generate_voice(scene.voice_over, audio_path)
 
         # Video
-        video_path = os.path.join(output_dir, "video.mp4")
-        create_video_with_audio(image_path, audio_path, video_path)
+        #video_path = os.path.join(output_dir, "video.mp4")
+        #create_video_with_audio(image_path, audio_path, video_path)
 
-        scene_outputs[index] = video_path
+        #scene_outputs[index] = video_path
         scene_status[index] = "done"
     except Exception as e:
         print(f"Error in scene {index}: {e}")
