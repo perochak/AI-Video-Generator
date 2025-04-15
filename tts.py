@@ -1,16 +1,21 @@
-#from TTS.api import TTS
-#import torch
+import torch
+from transformers import VitsModel, AutoTokenizer
+import scipy.io.wavfile as wav
 
-#device = "cuda" if torch.cuda.is_available() else "cpu"
+def generate_voice(text: str, output_path: str):
+    # Load the pre-trained model and tokenizer
+    model = VitsModel.from_pretrained("facebook/mms-tts-urd-script_devanagari")
+    tokenizer = AutoTokenizer.from_pretrained("facebook/mms-tts-urd-script_devanagari")
 
-#tts = TTS.from_pretrained("tts_models/multilingual/multi-dataset/xtts_v2", 
-#                          speaker_wav=None, 
-#                          language="ur", 
-#                          use_deepspeed=False)
+    # Tokenize the input text
+    inputs = tokenizer(text, return_tensors="pt")
 
-#tts.load_custom_model("suhaibrashid17/XTTS-v2-Urdu-FT")  # <- This is the fine-tuned Urdu model
+    # Generate the speech waveform
+    with torch.no_grad():
+        mel_output, _, _ = model(input_ids=inputs["input_ids"])
 
-#tts.to(device)
+    # Convert the generated mel spectrogram to waveform (this might depend on the model type)
+    waveform = model.decode(mel_output)
 
-#def generate_voice(text, output_path):
-#    tts.tts_to_file(text=text, file_path=output_path, language="ur")
+    # Save the waveform as a .wav file
+    wav.write(output_path, 22050, waveform.squeeze().cpu().numpy())
